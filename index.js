@@ -22,7 +22,9 @@ async function start() {
   let readLineFunction = () => {
     rl.question("Read Messages ? (yes/exit) ", async (answer) => {
       if (answer == 'yes') {
-        console.log(await processMessages(await get.messages(driver)));
+        let messages = await processMessages(await get.messages(driver));
+        //console.log(messages);
+        console.log(helper.fillAuthorsAndDates(messages));
         readLineFunction();
       }else {
         rl.close();
@@ -66,7 +68,7 @@ const processMessages = async (messages) => {
     
     //let reply = null;
     //if(await is.hasReply(message)) {
-
+    //
     //}
     let content = null;
     if(content = await is.text(message)) {
@@ -97,17 +99,15 @@ const processMessages = async (messages) => {
 
       objectsArray.push(await transform.video(null, message, author));
 
-//    }else if(await is.multiImage(message)) {
-//      objectsArray.push({
-//       type: "multi-image",
-//       info: "not supported yet"
-//     });
+    }else if(await is.multiImage(message)) {
+
+      objectsArray.push(await transform.multiImage(null, message, author));
+
    }else if(await is.doubleStackedSticker(message)) {
-     objectsArray.push({
-       type: "double-stacked-sticker",
-       info: "not supported yet"
-     });
-    }
+
+     objectsArray.push(await transform.doubleStackedSticker(null, message, author));
+
+   }
 
 
   }
